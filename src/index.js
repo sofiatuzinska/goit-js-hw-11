@@ -1,13 +1,12 @@
 import './sass/main.scss';
 import { Notify } from 'notiflix';
 const axios = require('axios').default;
-// Описан в документации
+
 import SimpleLightbox from 'simplelightbox';
-// Дополнительный импорт стилей
+
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-// -------------------------------------------------------------------------------------------------------
-//let variables
+
 
 let searchQueryResult = '';
 let q = '';
@@ -15,9 +14,7 @@ let pageN = 1;
 let gallery = new SimpleLightbox('.gallery a', { /* options */enableKeyboard: true, });
 
 
-//Objects
 
-//pixabayObj
 
 const pixabayAPI = {
 
@@ -31,22 +28,19 @@ const pixabayAPI = {
         per_page: "40",
 
 };
-    
-//markup
+
+
 
 const markupData = {
     markup: "",
     htmlCode: "",
 };
 
-// -------------------------------------------------------------------------------------------------------
-// searchForm and gallery find in DOM
+
 
 const searchForm = document.querySelector('.search-form');
 const gallerySelector = document.querySelector('.gallery');
 
-// -------------------------------------------------------------------------------------------------------
-// event listener search form
 
 searchForm.addEventListener("submit", async (e) => {
 
@@ -57,7 +51,7 @@ searchForm.addEventListener("submit", async (e) => {
     searchQueryResult = searchQuery.value;
 
 
-    // console.log
+
     console.log("searchQueryResult:",`"${searchQueryResult}"`);
     console.log("q:", `"${q}"`);
     
@@ -101,7 +95,7 @@ searchForm.addEventListener("submit", async (e) => {
         gallerySelector.insertAdjacentHTML("beforeend", markupData.htmlCode);
         btnLoadMore.classList.add("is-visible");
         
-        // simpleLightbox gallery destroys and reinitilized
+ 
         gallery.refresh();
         
         
@@ -119,7 +113,7 @@ searchForm.addEventListener("submit", async (e) => {
 
         Notify.success(`'Hooray! We found ${results.totalHits} images.'`);
 
-        //console.log
+    
         console.log("results", results);
 
     }
@@ -130,12 +124,9 @@ searchForm.addEventListener("submit", async (e) => {
 
     };
 
-    // console.log
     console.log("");
 });
 
-// -------------------------------------------------------------------------------------------------------
-// button load more
 
 const btnLoadMore = document.querySelector('.load-more');
 btnLoadMore.addEventListener("click", async () => {
@@ -151,7 +142,7 @@ try {
         gallerySelector.insertAdjacentHTML("beforeend", markupData.htmlCode);
         btnLoadMore.classList.add("is-visible");
         
-        // simpleLightbox gallery destroys and reinitilized
+   
         gallery.refresh();
 
         const { baseUrl, key, image_type, orientation, safesearch, order, page, per_page } = pixabayAPI;
@@ -177,8 +168,7 @@ try {
     console.log("");
 });
 
-// -------------------------------------------------------------------------------------------------------
-// fetch photos function
+
 
 async function fetchPhotos(searchQueryResult) {
 
@@ -189,8 +179,7 @@ async function fetchPhotos(searchQueryResult) {
     
     console.log("page", page);
 
-    // const response = await fetch(`${baseUrl}?key=${key}&q=${q}&image_type=${image_type}&orientation=${orientation}&safesearch=${safesearch}&order=${order}&page=${page}&per_page=${per_page}`);
-    // const results = await response.json();
+
     
     const response = await axios.get(`${baseUrl}?key=${key}&q=${q}&image_type=${image_type}&orientation=${orientation}&safesearch=${safesearch}&order=${order}&page=${page}&per_page=${per_page}`);
     const results = response.data;
@@ -200,7 +189,7 @@ async function fetchPhotos(searchQueryResult) {
     console.log("response", response);
     console.log("page", page);
     
-    //results destruction
+
    
     const {total, totalHits, hits} = results;
     const totalPages = Math.ceil(totalHits / per_page);
@@ -209,7 +198,7 @@ async function fetchPhotos(searchQueryResult) {
     throw new Error();
     };
 
-    //total pages check
+
     if (page >= totalPages) {
         
         btnLoadMore.classList.remove("is-visible");
@@ -224,13 +213,12 @@ async function fetchPhotos(searchQueryResult) {
     console.log("totalPages=", totalPages);
 
 
-    //received data
+
     return results;
 
 };
 
-// -------------------------------------------------------------------------------------------------------
-// render photos function, make html markup
+
 
 async function renderedPhotos(results) {
 
@@ -261,4 +249,3 @@ async function renderedPhotos(results) {
 };
 
 
-// -------------------------------------------------------------------------------------------------------
